@@ -43,6 +43,7 @@ python mssql_mcp_server.py
 The MCP server exposes two tools:
 - `run_query(sql: str)` executes any SQL statement and returns rows or the number of affected rows.
 - `describe_table(schema: str, table_name: str)` returns the column metadata using `INFORMATION_SCHEMA`.
+- `describe_indexes_and_foreign_keys(schema: str, table_name: str)` lists index definitions plus inbound/outbound foreign keys.
 
 Point your MCP-compatible client at the running process to issue SQL queries through these tools.
 
