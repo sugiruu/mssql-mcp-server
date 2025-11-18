@@ -7,7 +7,11 @@ Simple MCP server with tools to execute queries against a MSSQL database.
 - Network access to a Microsoft SQL Server instance
 
 ## Setup
-1. (Optional but recommended) create and activate a virtual environment.
+1. (Optional but recommended) create and activate a virtual environment. Example:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # Windows: .venv\Scripts\activate
+   ```
 2. Install dependencies:
    ```bash
    pip install -r requirements.txt
