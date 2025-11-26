@@ -3,7 +3,9 @@ Simple MCP server with tools to execute queries against a MSSQL database.
 
 ## Requirements
 - Python 3.11+
-- [pymssql](https://pymssql.readthedocs.io/en/stable/) and `python-dotenv` (installed through `requirements.txt`)
+- On Windows: `pyodbc` plus Microsoft ODBC driver for SQL Server (Driver 18 recommended)
+- On macOS/Linux: [`pymssql`](https://pymssql.readthedocs.io/en/stable/) (FreeTDS) is used by default
+- `python-dotenv` (installed through `requirements.txt`)
 - Network access to a Microsoft SQL Server instance
 
 ## Setup
@@ -23,13 +25,19 @@ The server reads its connection info from environment variables or a `.env` file
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| `MSSQL_SERVER` | ✅ | Hostname or `host,port` of the SQL Server instance |
+| Variable | Required | Description |
+| --- | --- | --- |
+| `MSSQL_SERVER` | ✅ | Hostname of the SQL Server instance (append `,port` if needed) |
 | `MSSQL_DB` | ❌ | Database name; defaults to `master` when omitted |
 | `MSSQL_USER` | ✅ (for SQL auth) | SQL Server login when using `MSSQL_AUTH=sql` |
 | `MSSQL_PASSWORD` | ✅ (for SQL auth) | Password for the login when using `MSSQL_AUTH=sql` |
 | `MSSQL_AUTH` | ❌ | `sql` (default) or `windows` for integrated authentication |
+| `MSSQL_DRIVER` | ❌ (Windows) | ODBC driver name; defaults to `ODBC Driver 18 for SQL Server` |
+| `MSSQL_PORT` | ❌ | Explicit port override (comma-style in `MSSQL_SERVER` also works) |
+| `MSSQL_USE_PYODBC` | ❌ | Force pyodbc even on non-Windows |
+| `MSSQL_USE_PYMSSQL` | ❌ | Force pymssql even on Windows |
 
-Set `MSSQL_AUTH=windows` to use Windows authentication (trusted connection) with the current OS identity; `MSSQL_USER` and `MSSQL_PASSWORD` are ignored in that case.
+Set `MSSQL_AUTH=windows` to use Windows authentication (trusted connection) with the current OS identity; `MSSQL_USER` and `MSSQL_PASSWORD` are ignored in that case. On Windows, the server uses `pyodbc` by default; on macOS/Linux it uses `pymssql` unless you force `MSSQL_USE_PYODBC=1`.
 
 For convenience, start with `.env.example`:
 ```bash
