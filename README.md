@@ -25,8 +25,11 @@ The server reads its connection info from environment variables or a `.env` file
 | --- | --- | --- |
 | `MSSQL_SERVER` | ✅ | Hostname or `host,port` of the SQL Server instance |
 | `MSSQL_DB` | ❌ | Database name; defaults to `master` when omitted |
-| `MSSQL_USER` | ✅ | SQL Server login |
-| `MSSQL_PASSWORD` | ✅ | Password for the login |
+| `MSSQL_USER` | ✅ (for SQL auth) | SQL Server login when using `MSSQL_AUTH=sql` |
+| `MSSQL_PASSWORD` | ✅ (for SQL auth) | Password for the login when using `MSSQL_AUTH=sql` |
+| `MSSQL_AUTH` | ❌ | `sql` (default) or `windows` for integrated authentication |
+
+Set `MSSQL_AUTH=windows` to use Windows authentication (trusted connection) with the current OS identity; `MSSQL_USER` and `MSSQL_PASSWORD` are ignored in that case.
 
 For convenience, start with `.env.example`:
 ```bash

@@ -10,14 +10,33 @@ load_dotenv(Path(__file__).with_name(".env"))
 
 # Set env vars before starting: MSSQL_SERVER, MSSQL_DB (optional), MSSQL_USER, MSSQL_PASSWORD
 def build_connection_args() -> dict:
-    return {
-        "server": os.environ["MSSQL_SERVER"],
-        "database": os.environ.get("MSSQL_DB", "master"),
-        "user": os.environ["MSSQL_USER"],
-        "password": os.environ["MSSQL_PASSWORD"],
+    server = os.environ["MSSQL_SERVER"]
+    database = os.environ.get("MSSQL_DB", "master")
+    auth_mode = os.environ.get("MSSQL_AUTH", "sql").lower()
+
+    args = {
+        "server": server,
+        "database": database,
         "charset": "UTF-8",
         "login_timeout": 5,
     }
+
+    if auth_mode in {"windows", "trusted"}:
+        # Integrated Windows authentication; uses the current OS identity.
+        args["trusted"] = True
+        return args
+
+    if auth_mode != "sql":
+        raise ValueError("MSSQL_AUTH must be 'sql' or 'windows'")
+
+    user = os.environ.get("MSSQL_USER")
+    password = os.environ.get("MSSQL_PASSWORD")
+    if not user or not password:
+        raise RuntimeError("MSSQL_USER and MSSQL_PASSWORD are required unless MSSQL_AUTH=windows")
+
+    args["user"] = user
+    args["password"] = password
+    return args
 
 
 server = FastMCP(name="mssql-db")
